@@ -244,20 +244,20 @@ const PlayerDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#FFEEA9] via-white to-[#FFEEA9]/50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#4A9782] to-[#DCD0A8] flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7D29] mx-auto"></div>
-          <p className="text-gray-600">Loading your dashboard...</p>
+          <div className="animate-spin rounded-full h-15 w-15 border-b-2 border-[#004030] mx-auto"></div>
+          <p className="text-black text-xl font-bold">Loading your dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFEEA9] via-white to-[#FFEEA9]/50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#4A9782] to-[#DCD0A8] p-4">
       <div className="max-w-7xl mx-auto">
         {/* Welcome & My Bookings */}
-        <div className="bg-gradient-to-r from-[#7B4019] to-[#FF7D29] rounded-2xl p-6 mb-8 text-white shadow-lg mt-20 flex justify-between items-center">
+        <div className="bg-[#004030] rounded-2xl p-6 mb-8 text-white shadow-lg mt-20 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold mb-2">Welcome back, {player?.name || 'Player'}! 🏸🎾</h1>
             <p className="text-orange-100">Ready to book your next game?</p>
@@ -269,7 +269,7 @@ const PlayerDashboard = () => {
             </div>
             <button
               onClick={() => setIsBookingsModalOpen(true)}
-              className="bg-white text-orange-600 font-semibold px-5 py-2 rounded-xl shadow-md hover:shadow-lg transition"
+              className="bg-white text-[#004030] font-semibold px-5 py-2 rounded-xl shadow-md hover:shadow-lg transition"
             >
               My Bookings
             </button>
@@ -283,12 +283,12 @@ const PlayerDashboard = () => {
             <input
               type="text"
               placeholder="Search courts by name or location..."
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent bg-white shadow-sm"
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:[#004030] focus:border-transparent bg-white shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button className="flex items-center gap-2 px-6 py-3 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 transition-colors shadow-sm">
+          <button className="flex items-center gap-2 px-6 py-3 border border-[#004030] rounded-xl bg-white hover:bg-[#004030] transition-colors shadow-sm">
             <Filter className="w-5 h-5" />
             <span>Filters</span>
           </button>
@@ -304,62 +304,37 @@ const PlayerDashboard = () => {
                 key={court._id}
                 className="bg-white rounded-lg shadow-lg"
               >
-                <div className="relative h-48 bg-gray-100 rounded-t-lg overflow-hidden">
+                <div className="relative h-52 bg-gray-100 rounded-t-lg overflow-hidden">
                   <img
                     src={court.images?.[0] || 'https://via.placeholder.com/400x300?text=Available'}
                     alt={court.name}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-4 left-1">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        court.status === 'Available'
-                          ? 'bg-green-600 text-white'
-                          : 'bg-orange-600 text-white'
-                      }`}
-                    >
-                      {court.status}
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => toggleFavorite(court._id)}
-                    className="absolute top-4 right-4 p-2 rounded-full bg-white shadow-md hover:bg-gray-50 transition-colors"
-                  >
-                    <Heart
-                      className={`w-5 h-5 ${
-                        favorites.has(court._id) ? 'fill-red-500 text-red-500' : 'text-gray-400'
-                      }`}
-                    />
-                  </button>
                 </div>
 
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h3 className="text-xl text-[#7B4019] mb-1">{court.name}</h3>
-                      <div className="flex items-center text-gray-700 mb-2">
+                      <h3 className="text-2xl text-[#004030] font-bold mb-1">{court.name}</h3>
+                      <div className="flex items-center text-gray-900 mb-2">
                         <MapPin className="w-4 h-4 mr-1" />
                         <span className="text-sm">{court.location}</span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-[#FF7D29]">Rs.{court.pricePerHour}</div>
-                      <div className="text-sm text-gray-500">per hour</div>
+                      <div className="text-2xl font-bold text-[#4A9782]">Rs.{court.pricePerHour}</div>
+                      <div className="text-sm text-gray-900">per hour</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center mb-3">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="ml-1 font-medium text-gray-700">{court.rating}</span>
-                    <span className="ml-2 text-sm text-gray-500">({court.reviews})</span>
-                  </div>
+                  
 
                   <p className="text-gray-600 text-sm mb-4">{court.description}</p>
 
                   <button
                     className={`w-full py-3 rounded-xl font-medium transition-all duration-200 ${
                       !isFullyBooked
-                        ? 'bg-gradient-to-r from-[#FF7D29] to-[#FFBF78] hover:from-[#FFBF78] hover:to-[#FF7D29] text-white font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-300'
+                        ? 'bg-gradient-to-br from-[#004030] to-[#4A9782] hover:from-[#4A9782] hover:to-[#004030] text-white font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-300'
                         : 'bg-orange-200 text-orange-400 cursor-not-allowed'
                     }`}
                     disabled={isFullyBooked}
@@ -382,7 +357,7 @@ const PlayerDashboard = () => {
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
             className={`px-3 py-1 rounded-md border ${
-              currentPage === 1 ? 'text-gray-400 border-gray-300 cursor-not-allowed' : 'hover:bg-orange-200 border-orange-400 text-orange-600'
+              currentPage === 1 ? 'text-gray-900 border-gray-600 cursor-not-allowed' : 'hover:bg-[#4A9782] border-[#4A9782] text-[#004030]'
             }`}
           >
             Prev
@@ -396,8 +371,8 @@ const PlayerDashboard = () => {
                 onClick={() => goToPage(pageNum)}
                 className={`px-3 py-1 rounded-md border ${
                   currentPage === pageNum
-                    ? 'bg-orange-500 text-white border-orange-500'
-                    : 'border-gray-300 hover:bg-orange-200 text-orange-600'
+                    ? 'bg-[#004030] text-white'
+                    : 'border-[#004030]  hover:bg-[#4A9782] text-[#004030]'
                 }`}
               >
                 {pageNum}
@@ -409,7 +384,7 @@ const PlayerDashboard = () => {
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
             className={`px-3 py-1 rounded-md border ${
-              currentPage === totalPages ? 'text-gray-400 border-gray-300 cursor-not-allowed' : 'hover:bg-orange-200 border-orange-400 text-orange-600'
+              currentPage === totalPages ? 'text-gray-900 border-gray-600 cursor-not-allowed' : 'hover:bg-[#4A9782] border-[#4A9782] text-[#004030]'
             }`}
           >
             Next
@@ -418,10 +393,10 @@ const PlayerDashboard = () => {
 
         {/* Booking Modal */}
         {isModalOpen && bookingInfo && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 bg-gradient-to-br from-[#4A9782] to-[#DCD0A8] bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
               <div className="flex justify-between items-center border-b pb-3 mb-6">
-                <h2 className="text-xl font-bold text-gray-800">Book {bookingInfo.court.name}</h2>
+                <h2 className="text-xl font-bold text-[#004030]">Book {bookingInfo.court.name}</h2>
                 <button
                   onClick={() => setIsModalOpen(false)}
                   className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -431,7 +406,7 @@ const PlayerDashboard = () => {
               </div>
 
               <div>
-                <h3 className="font-semibold text-gray-700 mb-3">Select Date</h3>
+                <h3 className="font-semibold text-gray-900 mb-3">Select Date</h3>
                 <div className="grid grid-cols-7 gap-1 text-center">
                   {calendarDays.map((day, idx) => {
                     const dayStr = format(day, 'yyyy-MM-dd');
@@ -450,10 +425,10 @@ const PlayerDashboard = () => {
                         }}
                         className={`relative py-2 rounded ${
                           isSelected
-                            ? 'bg-orange-500 text-white font-bold'
+                            ? 'bg-[#004030] text-white font-bold'
                             : disabled
-                            ? 'text-gray-300 cursor-not-allowed'
-                            : 'hover:bg-orange-200'
+                            ? 'text-gray-400 cursor-not-allowed'
+                            : 'hover:bg-[#4A9782]'
                         }`}
                       >
                         {format(day, 'd')}
@@ -461,7 +436,7 @@ const PlayerDashboard = () => {
                         {hasSlots(day) && (
                           <span
                             className={`block mx-auto mt-1 w-2 h-2 rounded-full ${
-                              isSelected ? 'bg-white' : 'bg-orange-500'
+                              isSelected ? 'bg-white' : 'bg-[#004030]'
                             }`}
                             aria-label="Has available slots"
                           />
@@ -474,7 +449,7 @@ const PlayerDashboard = () => {
 
               {bookingInfo.selectedDate && (
                 <div className="mt-6">
-                  <h3 className="font-semibold text-gray-700 mb-3">Slots for {bookingInfo.selectedDate}</h3>
+                  <h3 className="font-semibold text-gray-900 mb-3">Slots for {bookingInfo.selectedDate}</h3>
                   {(slotsByDate[bookingInfo.selectedDate] || []).length === 0 ? (
                     <p className="text-gray-500">No time slots available for this date.</p>
                   ) : (
@@ -492,7 +467,7 @@ const PlayerDashboard = () => {
                               : selectedSlot?.start === slot.start &&
                                 selectedSlot?.end === slot.end &&
                                 selectedSlot?.date === bookingInfo.selectedDate
-                              ? 'bg-orange-100 border-orange-300 text-orange-700'
+                              ? 'bg-[#004030]  text-white'
                               : 'bg-green-100 border-green-200 text-green-700 hover:bg-green-200 hover:border-green-300'
                           }`}
                         >
@@ -522,7 +497,7 @@ const PlayerDashboard = () => {
                   onClick={handleConfirmBooking}
                   className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${
                     selectedSlot
-                      ? 'bg-orange-500 hover:bg-orange-600 text-white'
+                      ? 'bg-[#004030] hover:bg-[#4A9782] text-white'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >
@@ -548,7 +523,7 @@ const PlayerDashboard = () => {
 
         {/* My Bookings Modal */}
         {isBookingsModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 bg-gradient-to-br from-[#4A9782] to-[#DCD0A8] bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-y-auto p-6">
               <div className="flex justify-between items-center border-b pb-3 mb-6">
                 <h2 className="text-xl font-bold text-gray-800">My Bookings</h2>

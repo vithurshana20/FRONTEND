@@ -1,292 +1,156 @@
-// import { useState } from "react";
-// import axios from "axios";
+import React, { useEffect, useState } from "react";
+import api from "../services/api";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-// export default function AddCourtForm() {
-//   const [form, setForm] = useState({
-//     name: "",
-//     location: "",
-//     pricePerHour: "",
-//     phone: "",
-//     mapLink: "",
-//     images: [],
-//   });
+export default function AddCourtForm({ onSuccess }) {
+  const [name, setName] = useState("");
+  const [location, setLocation] = useState("");
+  const [pricePerHour, setPricePerHour] = useState("");
+  const [phone, setPhone] = useState("");
+  const [mapLink, setMapLink] = useState("");
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-//   const [message, setMessage] = useState("");
-//   const token = localStorage.getItem("token");
-
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-
-//   const handleImageChange = (e) => {
-//     setForm({ ...form, images: e.target.files });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     const data = new FormData();
-//     data.append("name", form.name);
-//     data.append("location", form.location);
-//     data.append("pricePerHour", form.pricePerHour);
-//     data.append(
-//       "contact",
-//       JSON.stringify({ phone: form.phone, mapLink: form.mapLink })
-//     );
-
-//     for (let i = 0; i < form.images.length; i++) {
-//       data.append("images", form.images[i]);
-//     }
-
-//     try {
-//       const res = await axios.post("http://localhost:5000/api/courts/add", data, {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
-
-//       setMessage(res.data.message);
-//     } catch (err) {
-//       setMessage(err.response?.data?.message || "Court submission failed");
-//     }
-//   };
-
-//   return (
-//     <div className="max-w-xl mx-auto bg-white p-6 rounded-lg shadow">
-//       <h2 className="text-xl font-bold mb-4 text-[#00332e]">Register Your Court</h2>
-
-//       {message && <p className="mb-4 text-green-600 font-medium">{message}</p>}
-
-//       <form onSubmit={handleSubmit} className="space-y-4">
-//         <input
-//           name="name"
-//           value={form.name}
-//           onChange={handleChange}
-//           placeholder="Court Name"
-//           required
-//           className="w-full p-2 border rounded"
-//         />
-
-//         <input
-//           name="location"
-//           value={form.location}
-//           onChange={handleChange}
-//           placeholder="Location"
-          
-//           className="w-full p-2 border rounded"
-//         />
-
-//         <input
-//           name="pricePerHour"
-//           value={form.pricePerHour}
-//           onChange={handleChange}
-//           placeholder="Price per Hour"
-//           type="number"
-          
-//           className="w-full p-2 border rounded"
-//         />
-
-//         <input
-//           name="phone"
-//           value={form.phone}
-//           onChange={handleChange}
-//           placeholder="Contact Phone"
-          
-//           className="w-full p-2 border rounded"
-//         />
-
-//         <input
-//           name="mapLink"
-//           value={form.mapLink}
-//           onChange={handleChange}
-//           placeholder="Google Map Link"
-          
-//           className="w-full p-2 border rounded"
-//         />
-
-//         <input
-//           type="file"
-//           multiple
-//           accept="image/*"
-//           onChange={handleImageChange}
-//           className="w-full p-2 border rounded"
-//         />
-
-//         <button
-//           type="submit"
-//           className="bg-[#00332e] text-white px-6 py-2 rounded hover:bg-[#004d42]"
-//         >
-//           Submit Court for Approval
-//         </button>
-//       </form>
-//     </div>
-//   );
-// }
-
-
-// frontend/src/components/AddCourtForm.jsx
-import { useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify"; // Import toast for consistent notifications
-
-// Add onSuccess prop
-export default function AddCourtForm({ onSuccess, stripeSessionId }) { // stripeSessionId added here
-  const [form, setForm] = useState({
-    name: "",
-    location: "",
-    pricePerHour: "",
-    phone: "",
-    mapLink: "",
-    images: [],
-  });
-
-  // No need for local message state if using toast
-  // const [message, setMessage] = useState("");
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleImageChange = (e) => {
-    // Convert FileList to Array to store in state if needed, or directly assign
-    setForm({ ...form, images: e.target.files });
-  };
+  useEffect(() => {
+    if (!token) {
+      toast.error("Please login to continue");
+      navigate("/login");
+    }
+  }, [token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Basic validation for images
-    if (form.images.length === 0) {
-      toast.error("Please upload at least one image for the court.");
-      return;
-    }
-
-    const data = new FormData();
-    data.append("name", form.name);
-    data.append("location", form.location);
-    data.append("pricePerHour", form.pricePerHour);
-    // Ensure backend expects this JSON string or adapt
-    data.append(
-      "contact",
-      JSON.stringify({ phone: form.phone, mapLink: form.mapLink })
-    );
-
-    for (let i = 0; i < form.images.length; i++) {
-      data.append("images", form.images[i]);
-    }
-
-    // Conditionally append stripeSessionId if it exists
-    if (stripeSessionId) {
-        data.append("stripeSessionId", stripeSessionId);
-    }
+    setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/courts/add", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("location", location);
+      formData.append("pricePerHour", pricePerHour);
+      formData.append("contact", JSON.stringify({ phone, mapLink }));
+      images.forEach((image) => {
+        formData.append("images", image);
       });
 
-      // Use toast for messages
-      toast.success(res.data.message || "Court added successfully!");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      };
 
-      // Call the onSuccess prop passed from the parent (OwnerDashboard)
-      if (onSuccess) {
-        onSuccess();
+      // Optional: re-verify user profile before court creation
+      const profileRes = await api.get("/auth/profile", { headers });
+      if (profileRes.data.subscriptionStatus !== "active") {
+        toast.error("You must have an active subscription to add a court.");
+        setLoading(false);
+        return;
       }
 
-      // Optionally clear form fields after successful submission
-      setForm({
-        name: "",
-        location: "",
-        pricePerHour: "",
-        phone: "",
-        mapLink: "",
-        images: [],
-      });
-      // Clear file input manually (important for re-uploading same files)
-      e.target.reset(); // Resets the form elements
+      await api.post("/courts/add", formData, { headers });
 
+      toast.success("Court submitted for approval!");
+      if (onSuccess) onSuccess();
+
+      // Optionally reset form
+      setName("");
+      setLocation("");
+      setPricePerHour("");
+      setPhone("");
+      setMapLink("");
+      setImages([]);
     } catch (err) {
-      // Use toast for error messages
-      toast.error(err.response?.data?.message || "Court submission failed.");
-      console.error("Court submission error:", err);
+      console.error("Court add error:", err);
+      toast.error(err.response?.data?.message || "Failed to add court");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto bg-white p-6 rounded-lg shadow">
-      <h2 className="text-xl font-bold mb-4 text-[#00332e]">Register Your Court</h2>
+    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-[#FFF9E5] rounded-lg shadow-lg max-w-lg mx-auto my-10"> {/* Off-White/Cream background for the form card */}
+      <h2 className="text-2xl font-bold text-[#004030] mb-6 text-center">Add New Court</h2> {/* Dark Green heading */}
 
-      {/* Removed local message display, relying on ToastContainer */}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium text-[#004030]">Court Name</label> {/* Dark Green label */}
         <input
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          placeholder="Court Name"
+          id="name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm focus:border-[#4A9782] focus:ring-[#4A9782] p-2" // Medium Green focus
           required
-          className="w-full p-2 border rounded"
         />
-
+      </div>
+      <div>
+        <label htmlFor="location" className="block text-sm font-medium text-[#004030]">Location</label> {/* Dark Green label */}
         <input
-          name="location"
-          value={form.location}
-          onChange={handleChange}
-          placeholder="Location"
+          id="location"
+          type="text"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm focus:border-[#4A9782] focus:ring-[#4A9782] p-2" // Medium Green focus
           required
-          className="w-full p-2 border rounded"
         />
-
+      </div>
+      <div>
+        <label htmlFor="pricePerHour" className="block text-sm font-medium text-[#004030]">Price Per Hour (LKR)</label> {/* Dark Green label */}
         <input
-          name="pricePerHour"
-          value={form.pricePerHour}
-          onChange={handleChange}
-          placeholder="Price per Hour"
+          id="pricePerHour"
           type="number"
+          value={pricePerHour}
+          onChange={(e) => setPricePerHour(e.target.value)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm focus:border-[#4A9782] focus:ring-[#4A9782] p-2" // Medium Green focus
           required
-          min="0" // Ensure price is not negative
-          className="w-full p-2 border rounded"
         />
-
+      </div>
+      <div>
+        <label htmlFor="phone" className="block text-sm font-medium text-[#004030]">Phone Number</label> {/* Dark Green label */}
         <input
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-          placeholder="Contact Phone"
+          id="phone"
+          type="text"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm focus:border-[#4A9782] focus:ring-[#4A9782] p-2" // Medium Green focus
           required
-          type="tel" // Use type="tel" for phone numbers
-          className="w-full p-2 border rounded"
         />
-
+      </div>
+      <div>
+        <label htmlFor="mapLink" className="block text-sm font-medium text-[#004030]">Google Maps Link</label> {/* Dark Green label */}
         <input
-          name="mapLink"
-          value={form.mapLink}
-          onChange={handleChange}
-          placeholder="Google Map Link (Optional)" // Make optional if not strictly required
-          className="w-full p-2 border rounded"
+          id="mapLink"
+          type="text"
+          value={mapLink}
+          onChange={(e) => setMapLink(e.target.value)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm focus:border-[#4A9782] focus:ring-[#4A9782] p-2" // Medium Green focus
+          required
         />
-
+      </div>
+      <div>
+        <label htmlFor="images" className="block text-sm font-medium text-[#004030]">Images</label> {/* Dark Green label */}
         <input
+          id="images"
           type="file"
           multiple
-          accept="image/*"
-          onChange={handleImageChange}
-          required // Make images required
-          className="w-full p-2 border rounded"
+          onChange={(e) => setImages([...e.target.files])}
+          className="mt-1 block w-full text-sm text-[#004030] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#DCD0A8] file:text-[#004030] hover:file:bg-[#4A9782] hover:file:text-white transition-colors" // Styled file input with Light Khaki and Dark Green, hover with Medium Green
+          required
         />
-
-        <button
-          type="submit"
-          className="bg-[#00332e] text-white px-6 py-2 rounded hover:bg-[#004d42]"
-        >
-          Submit Court for Approval
-        </button>
-      </form>
-    </div>
+      </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition-colors duration-200 ${
+          loading ? "bg-[#4A9782] cursor-not-allowed" : "bg-[#004030] hover:bg-[#4A9782]" // Dark Green button, Medium Green on hover; Medium Green when loading
+        }`}
+      >
+        {loading ? "Submitting..." : "Submit Court"}
+      </button>
+    </form>
   );
 }
+
+
+

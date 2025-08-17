@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { User, Mail, Phone, Lock, Shield } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import courtBackground from "../assets/vichu0.png"; // Adjust path to your background image
+import courtBackground from "../assets/14.jpg"; // Adjust path to your background image
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Navbar from "../components/Navbar"
+
 
 export default function CourtOwnerRegisterForm() {
   const [name, setName] = useState('');
@@ -41,8 +43,10 @@ export default function CourtOwnerRegisterForm() {
   };
 
   return (
+    <>
+    <Navbar/>
     <div 
-      className="min-h-screen flex items-center justify-center px-4 mt-10"
+      className="min-h-screen flex items-center justify-center px-4 mt-10 "
       style={{
         backgroundImage: `url(${courtBackground})`,
         backgroundSize: 'cover',
@@ -62,8 +66,8 @@ export default function CourtOwnerRegisterForm() {
             AB
           </div> */}
         </div>
-        <h2 className="text-center text-2xl font-bold text-orange-600">Join as Court Owner</h2>
-        <p className="text-center text-gray-500">Register to manage your courts and bookings</p>
+        <h2 className="text-center text-2xl font-bold text-[#004030]">Join as Court Owner</h2>
+        <p className="text-center text-gray-900">Register to manage your courts and bookings</p>
 
         <form className="space-y-4" onSubmit={handleRegister}>
           <div>
@@ -149,30 +153,31 @@ export default function CourtOwnerRegisterForm() {
               required
             />
             <span>
-              I agree to the <a href="#" className="text-orange-500 underline">Terms of Service</a> and <a href="#" className="text-orange-500 underline">Privacy Policy</a>
+              I agree to the <a href="#" className="text-[#004030] underline">Terms of Service</a> and <a href="#" className="text-[#004030] underline">Privacy Policy</a>
             </span>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-orange-400 text-white font-semibold py-2 rounded-md shadow-md hover:bg-orange-500 transition"
+            className="w-full bg-[#004030] text-white font-semibold py-2 rounded-md shadow-md hover:bg-[#4A9782] transition"
           >
             Create Owner Account
           </button>
         </form>
 
-        <div className="text-center text-gray-500 text-sm">Or sign up with</div>
+        {/* <div className="text-center text-gray-500 text-sm">Or sign up with</div>
         <div className="flex justify-center gap-4">
           <button className="flex items-center gap-2 border px-4 py-2 rounded-md">
             <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
             Google
           </button>
-        </div>
+        </div> */}
 
         <div className="text-center text-sm">
-          Already have an account? <a href="/login" className="text-orange-500 font-medium">Sign in here</a>
+          Already have an account? <a href="/login" className="text-[#004030] font-medium">Sign in here</a>
         </div>
       </div>
     </div>
+    </>
   );
 }
